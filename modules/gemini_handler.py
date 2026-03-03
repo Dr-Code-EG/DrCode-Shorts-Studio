@@ -3,12 +3,13 @@
 """
 modules/gemini_handler.py
 التواصل مع Google Gemini API لتوليد الأفكار والسكربتات
-مع دعم التبديل التلقائي بين المفاتيح
+مع دعم التبديل التلقائي بين المفاتيح ونظام انتظار ذكي (Exponential Backoff)
 """
 
 import json
 import time
 import re
+import random
 from typing import Optional, List, Dict, Any
 
 try:
@@ -24,8 +25,8 @@ from .config_manager import ConfigManager
 class GeminiHandler:
     """Handles all interactions with Google Gemini AI API."""
 
-    MAX_RETRIES = 3
-    RETRY_DELAY = 2
+    MAX_RETRIES = 10  # زيادة عدد المحاولات
+    BASE_RETRY_DELAY = 5  # زيادة وقت الانتظار الأساسي
 
     def __init__(self, config: ConfigManager):
         self.config = config
@@ -46,9 +47,12 @@ class GeminiHandler:
             self.model = None
 
     def _call_gemini(self, prompt: str, retry_count: int = 0) -> Optional[str]:
-        """Call Gemini with automatic key rotation on quota exceeded."""
+        """Call Gemini with automatic key rotation and exponential backoff on quota exceeded."""
         if not self.model:
-            return None
+            # محاولة إعادة التهيئة إذا لم يكن هناك موديل
+            self._init_client()
+            if not self.model:
+                return None
 
         try:
             response = self.model.generate_content(prompt)
@@ -56,28 +60,32 @@ class GeminiHandler:
 
         except Exception as e:
             error_str = str(e).lower()
+            
+            # حساب وقت الانتظار الذكي (Exponential Backoff)
+            # 5, 10, 20, 40, 80 ثانية مع إضافة عشوائية بسيطة (jitter)
+            wait_time = (self.BASE_RETRY_DELAY * (2 ** retry_count)) + random.uniform(0, 2)
 
             # Rate limit / quota exceeded
             if any(x in error_str for x in ['quota', 'rate', 'limit', '429', 'resource_exhausted']):
-                print(f"⚠️  مفتاح Gemini وصل للحد... جاري التبديل")
+                print(f"⚠️  مفتاح Gemini وصل للحد... جاري التبديل والانتظار {wait_time:.1f} ثانية")
                 new_key = self.config.rotate_gemini_key()
 
                 if new_key and retry_count < self.MAX_RETRIES:
                     genai.configure(api_key=new_key)
                     self.model = genai.GenerativeModel('gemini-1.5-flash')
-                    time.sleep(self.RETRY_DELAY)
+                    time.sleep(wait_time)
                     return self._call_gemini(prompt, retry_count + 1)
                 else:
-                    print("❌ جميع مفاتيح Gemini وصلت للحد!")
+                    print("❌ جميع مفاتيح Gemini وصلت للحد أو تجاوزت عدد المحاولات!")
                     return None
 
             elif retry_count < self.MAX_RETRIES:
-                print(f"⚠️  خطأ Gemini: {e}. إعادة المحاولة {retry_count+2}/{self.MAX_RETRIES}...")
-                time.sleep(self.RETRY_DELAY * (retry_count + 1))
+                print(f"⚠️  خطأ Gemini: {e}. إعادة المحاولة {retry_count+2}/{self.MAX_RETRIES} بعد {wait_time:.1f} ثانية...")
+                time.sleep(wait_time)
                 return self._call_gemini(prompt, retry_count + 1)
 
             else:
-                print(f"❌ فشل Gemini: {e}")
+                print(f"❌ فشل Gemini بعد {self.MAX_RETRIES} محاولات: {e}")
                 return None
 
     def generate_ideas(self, count: int = 5, category: str = None) -> List[Dict]:
