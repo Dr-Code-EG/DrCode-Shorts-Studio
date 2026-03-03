@@ -78,8 +78,8 @@ DrCode-Shorts-Studio/
 
 ```bash
 # 1. استنساخ المستودع
-git clone https://github.com/drcode-ai/drcode-shorts-studio.git
-cd drcode-shorts-studio
+git clone https://github.com/Dr-Code-EG/DrCode-Shorts-Studio.git
+cd DrCode-Shorts-Studio
 
 # 2. تثبيت المكتبات (يُنصح ببيئة افتراضية)
 pip install -r requirements.txt
