@@ -1,0 +1,64 @@
+# DrCode Shorts Studio - .gitignore
+
+# ── API Keys & Credentials (NEVER commit these!) ──
+config.json
+credentials.json
+youtube_token.json
+*.json
+!package.json
+
+# ── Python ────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ── Virtual Environments ──────────────────────────
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ── Output & Temp Files ───────────────────────────
+output/
+temp/
+*.mp4
+*.mp3
+*.wav
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# ── IDEs ──────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ── Logs ──────────────────────────────────────────
+*.log
+logs/

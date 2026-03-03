@@ -1,0 +1,44 @@
+# DrCode Shorts Studio - Dependencies
+# تثبيت كل المكتبات: pip install -r requirements.txt
+
+# ── Gemini AI ─────────────────────────────────────
+google-generativeai>=0.7.0
+
+# ── HTTP Requests ─────────────────────────────────
+requests>=2.31.0
+
+# ── Video Processing ──────────────────────────────
+moviepy>=1.0.3
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.9
+numpy>=1.24.0
+
+# ── Image Processing ──────────────────────────────
+Pillow>=10.0.0
+
+# ── Audio ─────────────────────────────────────────
+mutagen>=1.47.0
+
+# ── YouTube API ───────────────────────────────────
+google-auth>=2.23.0
+google-auth-oauthlib>=1.1.0
+google-auth-httplib2>=0.1.1
+google-api-python-client>=2.100.0
+
+# ── Terminal UI ───────────────────────────────────
+rich>=13.7.0
+
+# ──────────────────────────────────────────────────
+# ملاحظات التثبيت:
+#
+# 1. FFmpeg مطلوب للفيديو:
+#    Windows:  winget install FFmpeg
+#    macOS:    brew install ffmpeg
+#    Linux:    sudo apt install ffmpeg
+#
+# 2. خطوط عربية (اختياري - للنصوص في الفيديو):
+#    حمّل خط Cairo من Google Fonts
+#    وضعه في: assets/fonts/Cairo-Regular.ttf
+#
+# 3. للنشر على YouTube:
+#    احصل على credentials.json من Google Cloud Console
