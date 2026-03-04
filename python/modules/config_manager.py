@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 modules/config_manager.py
-إدارة إعدادات الأداة ومفاتيح API مع دعم التدوير التلقائي
+إدارة إعدادات الأداة ومفاتيح API مع دعم n8n Webhook
 """
 
 import json
@@ -17,6 +17,8 @@ DEFAULT_CONFIG = {
     "gemini_api_keys": [],
     "gemini_key_index": 0,
     "gemini_key_failures": {},
+    "n8n_webhook_url": "",
+    "use_n8n": True,
     "pexels_api_key": "",
     "tts_api_key": "",
     "tts_voice": "Puck",
@@ -32,7 +34,7 @@ DEFAULT_CONFIG = {
     "max_images": 8,
     "image_duration": 3.5,
     "fps": 30,
-    "version": "1.0.0"
+    "version": "1.1.0"
 }
 
 
@@ -71,6 +73,7 @@ class ConfigManager:
 
     def set(self, key: str, value: Any):
         self._config[key] = value
+        self.save()
 
     # ── Gemini Key Management ────────────────────────────────
 
@@ -121,6 +124,7 @@ class ConfigManager:
         if key not in keys:
             keys.append(key)
             self._config['gemini_api_keys'] = keys
+            self.save()
 
     def remove_gemini_key(self, index: int):
         keys = self.get_gemini_keys()
@@ -129,6 +133,7 @@ class ConfigManager:
             self._config['gemini_api_keys'] = keys
             if self._config.get('gemini_key_index', 0) >= len(keys):
                 self._config['gemini_key_index'] = max(0, len(keys) - 1)
+            self.save()
 
     def get_gemini_key_status(self) -> dict:
         keys = self.get_gemini_keys()
@@ -160,4 +165,4 @@ class ConfigManager:
         return Path(self.get('assets_dir', 'assets/'))
 
     def __repr__(self):
-        return f"ConfigManager(gemini_keys={len(self.get_gemini_keys())}, quality={self.get('video_quality')})"
+        return f"ConfigManager(n8n_enabled={self.get('use_n8n')}, quality={self.get('video_quality')})"

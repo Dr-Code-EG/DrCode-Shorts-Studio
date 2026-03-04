@@ -54,7 +54,7 @@ def print_banner():
 [bold blue]║[/]  [bold magenta]╚═════╝ ╚═╝  ╚═╝[/]  [bold cyan]   ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝[/]  [bold blue]║[/]
 [bold blue]║[/]                                                          [bold blue]║[/]
 [bold blue]║[/]    [bold yellow]🎬 Shorts Studio[/] [bold white]- YouTube Shorts Automation[/]        [bold blue]║[/]
-[bold blue]║[/]    [bold white]Powered by Google Gemini AI    v1.0[/]                 [bold blue]║[/]
+[bold blue]║[/]    [bold white]Powered by n8n & Gemini AI    v1.1[/]                 [bold blue]║[/]
 [bold blue]╚══════════════════════════════════════════════════════════╝[/]
 """
         console.print(banner)
@@ -62,7 +62,7 @@ def print_banner():
         print("=" * 62)
         print("  DrCode Shorts Studio v1.0")
         print("  YouTube Shorts Automation Tool")
-        print("  by Dr Code | Powered by Gemini AI")
+        print("  by Dr Code | Powered by n8n & Gemini AI")
         print("=" * 62)
 
 
@@ -101,7 +101,7 @@ def run_full_pipeline(idea: str, config: ConfigManager, tracker: ProgressTracker
     result = {}
 
     # ── Step 1: Generate Script ──────────────────────────────
-    tracker.step(1, "توليد السكربت بـ Gemini AI...")
+    tracker.step(1, "توليد السكربت بـ n8n Webhook...")
     gemini = GeminiHandler(config)
     script_data = gemini.generate_full_script(idea)
 
